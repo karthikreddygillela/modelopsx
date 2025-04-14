@@ -1,0 +1,175 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<title>Hub | ModelOpsX</title>
+<style>
+    .hub-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    h2 {
+        color: var(--primary);
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .filters, .search-bar {
+        margin-bottom: 1.5rem;
+    }
+
+    .filters a {
+        margin-right: 0.75rem;
+        padding: 0.4rem 0.75rem;
+        background: #1a1a1a;
+        border: 1px solid var(--border);
+        color: var(--primary);
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .filters a.active {
+        background: var(--primary);
+        color: #000;
+        font-weight: bold;
+    }
+
+    .search-bar form {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .search-bar input {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        border: 1px solid var(--border);
+        background: var(--bg-dark);
+        color: var(--text);
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+
+    .search-bar button {
+        padding: 0.6rem 1.2rem;
+        background-color: var(--primary);
+        border: none;
+        color: #000;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .hub-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .hub-card {
+        background-color: var(--bg-light);
+        border: 1px solid var(--border);
+        padding: 1rem;
+        border-radius: 8px;
+        transition: transform 0.2s;
+    }
+
+    .hub-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .hub-card h4 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    .hub-card p {
+        font-size: 0.9rem;
+        color: #bbb;
+        margin-bottom: 0.75rem;
+    }
+
+    .hub-card a {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: bold;
+    }
+
+    .top-links {
+        margin-top: 3rem;
+    }
+
+    .top-links h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .top-links ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .top-links li {
+        margin-bottom: 0.75rem;
+    }
+
+    .top-links a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .top-links a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="hub-container">
+    <h2>Internal Hub</h2>
+
+    <div class="filters">
+        <a href="{% url 'hub_view' %}" class="{% if not selected_category %}active{% endif %}">All</a>
+        {% for cat in categories %}
+            <a href="?category={{ cat.name }}" class="{% if selected_category == cat.name %}active{% endif %}">{{ cat.name }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="search-bar">
+        <form method="get">
+            <input type="text" name="q" placeholder="Search links..." value="{{ search_query }}">
+            {% if selected_category %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="hub-grid">
+        {% for link in links %}
+        <div class="hub-card">
+            <h4>{{ link.name }}</h4>
+            <p>{{ link.description|default:"No description." }}</p>
+            <a href="{% url 'hub_redirect' link.pk %}" target="_blank">🔗 Open</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not links %}
+        <p style="margin-top: 2rem; color: var(--text-secondary); text-align: center;">No links found.</p>
+    {% endif %}
+
+    {% if recommended_links %}
+    <div class="top-links" style="margin-bottom: 2rem;">
+        <h3>⭐ Frequently Used by You</h3>
+        <ul>
+            {% for rec in recommended_links %}
+            <li>
+                <a href="{% url 'hub_redirect' rec.pk %}" target="_blank">{{ rec.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+</div>
+{% endblock %}

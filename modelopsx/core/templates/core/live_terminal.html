@@ -1,0 +1,143 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<title>Live SSH Terminal | ModelOpsX</title>
+
+<style>
+    .terminal-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 1rem;
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+    }
+
+    .terminal-header {
+        margin-bottom: 1rem;
+        color: var(--primary);
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        color: #bbb;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 0.6rem 0.8rem;
+        background-color: #111;
+        border: 1px solid #444;
+        color: #fff;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+
+    #terminal {
+        height: 500px;
+        width: 100%;
+        background: black;
+        border-radius: 6px;
+        margin-top: 2rem;
+    }
+
+    .connect-button {
+        margin-top: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--primary);
+        color: #000;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .connect-button:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .note {
+        font-size: 0.85rem;
+        color: #888;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .form-group {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="terminal-container">
+    <div class="terminal-header">🔐 Connect to JumpBox (Live Terminal)</div>
+
+    <div class="form-group">
+        <label for="ip">JumpBox IP Address</label>
+        <input id="ip" placeholder="e.g. 192.168.1.100" />
+    </div>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" placeholder="e.g. ubuntu, ec2-user" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password (leave blank if using PEM)</label>
+        <input id="password" type="password" placeholder="********" />
+    </div>
+
+    <div class="form-group">
+        <label for="pem">Paste PEM Key (optional)</label>
+        <textarea id="pem" rows="6" placeholder="-----BEGIN RSA PRIVATE KEY-----"></textarea>
+        <div class="note">Note: Provide either a password or PEM key (not both).</div>
+    </div>
+
+    <button onclick="startSession()" class="connect-button">🚀 Start Session</button>
+
+    <div id="terminal"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+
+<script>
+    const term = new Terminal();
+    term.open(document.getElementById('terminal'));
+    let socket = new WebSocket(`ws://${window.location.host}/ws/shell/live/`);
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.output) term.write(data.output);
+        if (data.error) term.write("\r\n[ERROR]: " + data.error);
+    };
+
+    function startSession() {
+        const payload = {
+            action: "connect",
+            ip: document.getElementById("ip").value,
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+            pem: document.getElementById("pem").value
+        };
+        socket.send(JSON.stringify(payload));
+
+        term.focus();
+
+        term.onData((data) => {
+            socket.send(JSON.stringify({ command: data }));
+        });
+    }
+</script>
+{% endblock %}

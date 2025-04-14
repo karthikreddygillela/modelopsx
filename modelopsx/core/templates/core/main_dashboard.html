@@ -1,0 +1,374 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<style>
+            /* Main Content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .content-wrapper {
+                flex-direction: row;
+            }
+        }
+
+        /* Left Section */
+        .left-section {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Right Section */
+        .right-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .right-section {
+                max-width: 350px;
+            }
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background-color: var(--bg-light);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 255, 136, 0.1);
+        }
+
+        .card h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card .value {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        /* Search Panel */
+        .search-panel {
+            background-color: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .search-panel h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg-dark);
+            color: var(--text);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-container button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            border: none;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-container button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        #searchResults {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Panels */
+        .panel {
+            background-color: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .panel h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel h3 i {
+            font-size: 1rem;
+        }
+
+        .panel ul {
+            list-style: none;
+        }
+
+        .panel li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .panel li:last-child {
+            border-bottom: none;
+        }
+
+        .panel li i {
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        /* Status indicators */
+        .status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-active {
+            background-color: var(--primary);
+        }
+
+        .status-pending {
+            background-color: #ffcc00;
+        }
+
+        .status-completed {
+            background-color: #00aaff;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--bg-darker);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+</style>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="content-wrapper">
+            <!-- Left Section -->
+            <div class="left-section">
+                <!-- Status Cards -->
+                <div class="cards">
+                    <div class="card fade-in" style="animation-delay: 0.1s">
+                        <div class="card-corner-accent"></div>
+                        <h3>GenAI Errors</h3>
+                        <div class="value">{{ errors.genai }}</div>
+                    </div>
+                    <div class="card fade-in" style="animation-delay: 0.2s">
+                        <div class="card-corner-accent"></div>
+                        <h3>Cloud Errors</h3>
+                        <div class="value">{{ errors.cloud }}</div>
+                    </div>
+                    <div class="card fade-in" style="animation-delay: 0.3s">
+                        <div class="card-corner-accent"></div>
+                        <h3>Active Models</h3>
+                        <div class="value">24</div>
+                    </div>
+                    <div class="card fade-in" style="animation-delay: 0.4s">
+                        <div class="card-corner-accent"></div>
+                        <h3>API Latency</h3>
+                        <div class="value">142ms</div>
+                    </div>
+                </div>
+                
+
+                <!-- Search Panel -->
+                <div class="search-panel fade-in" style="animation-delay: 0.5s">
+                    <h3><i class="fas fa-search"></i> Knowledge Search</h3>
+                    <div class="search-container">
+                        <input type="text" id="searchBox" placeholder="Search documentation, tickets, or deployments...">
+                        <button onclick="searchConfluence()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <div id="searchResults"></div>
+                </div>
+
+                <!-- Knowledge Hub -->
+                <div class="panel fade-in" style="animation-delay: 0.6s">
+                    <h3><i class="fas fa-lightbulb"></i> Knowledge Hub</h3>
+                    <ul>
+                        {% for doc in knowledge_base %}
+                            <li>
+                                <i class="fas fa-file-alt"></i>
+                                {{ doc }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Section -->
+            <div class="right-section">
+                <div class="panel fade-in" style="animation-delay: 0.7s">
+                    <h3><i class="fas fa-calendar-day"></i> Today's Deployments</h3>
+                    <ul>
+                        {% for item in deployments %}
+                            <li>
+                                <span class="status status-active"></span>
+                                {{ item }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="panel fade-in" style="animation-delay: 0.8s">
+                    <h3><i class="fas fa-calendar-week"></i> Upcoming Deployments</h3>
+                    <ul>
+                        {% for item in upcoming_deployments %}
+                            <li>
+                                <span class="status status-pending"></span>
+                                {{ item }}
+                            </li>
+                        {% empty %}
+                            <li>
+                                <span class="status status-completed"></span>
+                                No upcoming deployments
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="panel fade-in" style="animation-delay: 0.9s">
+                    <h3><i class="fas fa-bell"></i> Recent Alerts</h3>
+                    <ul>
+                        <li>
+                            <span class="status status-active"></span>
+                            Model latency increased by 15%
+                        </li>
+                        <li>
+                            <span class="status status-active"></span>
+                            Cloud storage at 85% capacity
+                        </li>
+                        <li>
+                            <span class="status status-completed"></span>
+                            API error rate normalized
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

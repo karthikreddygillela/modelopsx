@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<title>Add New Use Case | ModelOpsX</title>
+<style>
+    body {
+        background-color: #0a0a0a;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        background: #1a1a1a;
+        padding: 2rem;
+        border: 1px solid #333;
+        border-radius: 8px;
+    }
+
+    .form-container h2 {
+        color: #00ff88;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #b0b0b0;
+    }
+
+    .form-container input, .form-container textarea, .form-container select {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background: #111;
+        color: white;
+    }
+
+    .form-container input[type="file"] {
+        padding: 0.5rem;
+    }
+
+    .form-container button {
+        background-color: #00ff88;
+        color: black;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .form-container button:hover {
+        background-color: #00cc6a;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Add New Use Case</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_name">Use Case Name *</label>
+        {{ form.name }}
+
+        <label for="id_gameplan">Gameplan Document (PDF, DOCX) *</label>
+        {{ form.gameplan }}
+
+        <div style="margin-top: 2rem; padding: 1rem; background-color: #111; border: 1px dashed #444; border-radius: 6px;">
+            <p style="color: #ccc; font-style: italic;">🔒 The following fields are for internal use only and will be filled by the admin.</p>
+
+            <label for="id_confluence_link">Confluence Link</label>
+            {{ form.confluence_link }}
+
+            <label for="id_splunk_link">Splunk Dashboard Link</label>
+            {{ form.splunk_link }}
+
+            <label for="id_grafana_link">Grafana Dashboard Link</label>
+            {{ form.grafana_link }}
+
+            <label for="id_error_list_link">Error List Link</label>
+            {{ form.error_list_link }}
+        </div>
+
+        <button type="submit" style="margin-top: 1.5rem;">Submit</button>
+    </form>
+</div>
+
+{% endblock %}
