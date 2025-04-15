@@ -11,4 +11,6 @@ urlpatterns = [
     path('shell/<int:pk>/', views.shell_terminal, name='shell_terminal'),
     path('shell/live/', views.interactive_shell, name='interactive_shell'),
     path('ws/shell/live/', consumers.InteractiveSSHConsumer.as_asgi()),
+    path('finops/', views.finops_dashboard, name='finops'),
+    path('onefix/', views.onefix_board, name='onefix_board'),
 ]

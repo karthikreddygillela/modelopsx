@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneFix Architecture Flow</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0a0a0a, #1a1a1a);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 2rem;
+    }
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: center;
+    }
+    .box {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      width: 300px;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,255,136,0.2);
+    }
+    .arrow {
+      width: 2px;
+      height: 40px;
+      background: #00ff88;
+      margin: -1rem 0;
+    }
+    .highlight {
+      color: #00ff88;
+    }
+    .row {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    h1 {
+      text-align: center;
+      color: #00ff88;
+    }
+  </style>
+</head>
+<body>
+  <h1>OneFix Principle Architecture</h1>
+  <div class="flow-container">
+    <div class="box">📦 <strong>Usercase Onboarding</strong><br>Create Splunk JSON, deployment scripts via API</div>
+    <div class="arrow"></div>
+    <div class="box">⚙️ <strong>Deployment Phase</strong><br>Targets: <span class="highlight">Harness, IBM UCD, Ansible</span><br>Scripts stored, triggered</div>
+    <div class="arrow"></div>
+    <div class="box">📊 <strong>Monitoring Dashboard</strong><br>Data fetched from <span class="highlight">Splunk</span> to main UI</div>
+    <div class="arrow"></div>
+    <div class="box">📋 <strong>OneFix Error Board</strong><br>Known/resurfaced errors → fixed automatically<br>New errors → suggested to human-in-loop</div>
+    <div class="arrow"></div>
+    <div class="box">🤖 <strong>AI Agents</strong><br>Gradually take over fixing known issues<br>Improves via feedback over time</div>
+  </div>
+</body>
+</html>

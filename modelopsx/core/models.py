@@ -65,3 +65,15 @@ class ServerHost(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.jumpbox_ip_or_hostname})"
+
+class ErrorLog(models.Model):
+    app_name = models.CharField(max_length=100)
+    error_name = models.CharField(max_length=255)
+    stack_trace = models.TextField()
+    fixed = models.BooleanField(default=False)
+    fix_summary = models.TextField(blank=True, null=True)
+    doc_link = models.URLField(blank=True, null=True)
+    commit_ref = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    fixed_at = models.DateTimeField(blank=True, null=True)
+

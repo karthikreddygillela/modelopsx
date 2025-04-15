@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 2rem auto;">
+    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">🛠️ OneFix Error Board</h2>
+
+    <table style="width:100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #111; color: var(--primary);">
+                <th style="padding: 0.75rem;">App</th>
+                <th style="padding: 0.75rem;">Error</th>
+                <th style="padding: 0.75rem;">Status</th>
+                <th style="padding: 0.75rem;">Fix Summary</th>
+                <th style="padding: 0.75rem;">Doc</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.75rem; color: white;">{{ log.app_name }}</td>
+                <td style="padding: 0.75rem; color: white;">{{ log.error_name }}</td>
+                <td style="padding: 0.75rem;">
+                    {% if log.fixed %}
+                        <span style="color: #00ff88;">✅ Fixed</span>
+                    {% else %}
+                        <span style="color: orange;">⏳ Pending</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 0.75rem; color: var(--text-secondary);">
+                    {{ log.fix_summary|default:"—" }}
+                </td>
+                <td style="padding: 0.75rem;">
+                    {% if log.doc_link %}
+                        <a href="{{ log.doc_link }}" target="_blank" style="color: var(--primary);">🔗 View</a>
+                    {% else %}
+                        <span style="color: var(--text-secondary);">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

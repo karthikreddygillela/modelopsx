@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OneFix Plug-n-Play Architecture</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ff88;
+      margin-bottom: 2rem;
+    }
+
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .phase {
+      background: #1a1a1a;
+      border: 2px solid #2a2a2a;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 1000px;
+      box-shadow: 0 0 10px rgba(0,255,136,0.15);
+      position: relative;
+    }
+
+    .phase h2 {
+      color: #00ff88;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .phase p {
+      color: #ccc;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .box-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .box {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+      color: #00ff88;
+      box-shadow: 0 2px 6px rgba(0,255,136,0.1);
+    }
+
+    .arrow {
+      margin: 0.5rem auto;
+      text-align: center;
+      font-size: 2rem;
+      color: #00ff88;
+    }
+
+    @media (max-width: 768px) {
+      .box-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>OneFix Architecture (Plug & Play Flow)</h1>
+
+<div class="pipeline">
+
+  <div class="phase">
+    <h2>1️⃣ Use Case Onboarding</h2>
+    <p>When a use case is onboarded, necessary automation assets are created in the background.</p>
+    <div class="box-group">
+      <div class="box">Splunk JSON Generator</div>
+      <div class="box">Deployment Script Creator</div>
+      <div class="box">Metadata Collector</div>
+    </div>
+  </div>
+
+  <div class="arrow">⬇</div>
+
+  <div class="phase">
+    <h2>2️⃣ Deployment Phase</h2>
+    <p>Deployment triggers across various platforms based on configuration.</p>
+    <div class="box-group">
+      <div class="box">Harness</div>
+      <div class="box">IBM UCD</div>
+      <div class="box">Ansible Tower</div>
+      <div class="box">CloudRun/K8s</div>
+    </div>
+  </div>
+
+  <div class="arrow">⬇</div>
+
+  <div class="phase">
+    <h2>3️⃣ Monitoring & Error Capture</h2>
+    <p>Dashboards fetch logs from Splunk and update our internal UI in real-time.</p>
+    <div class="box-group">
+      <div class="box">Splunk Dashboards</div>
+      <div class="box">Internal Monitoring UI</div>
+      <div class="box">Slack/Email Alerts</div>
+    </div>
+  </div>
+
+  <div class="arrow">⬇</div>
+
+  <div class="phase">
+    <h2>4️⃣ OneFix Error Registry</h2>
+    <p>Known/resurfaced errors are auto-fixed. New errors are stored with fix notes by engineers.</p>
+    <div class="box-group">
+      <div class="box">Error → Fix Mapping</div>
+      <div class="box">Manual Fix Entry (Human-in-Loop)</div>
+      <div class="box">OneFix Central DB</div>
+    </div>
+  </div>
+
+  <div class="arrow">⬇</div>
+
+  <div class="phase">
+    <h2>5️⃣ Agent-Driven Auto Healing</h2>
+    <p>Agents trained on past fixes take automatic actions on familiar errors.</p>
+    <div class="box-group">
+      <div class="box">AI Agent Executes Fix</div>
+      <div class="box">Feedback Loop</div>
+      <div class="box">Improved Error Intelligence</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

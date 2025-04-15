@@ -1,0 +1,126 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 2rem auto;">
+    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">☁️ GCP FinOps Dashboard</h2>
+
+    <!-- Total Cloud Cost Summary -->
+    <div style="margin-bottom: 2rem; padding: 1.25rem; background-color: #111; border: 1px solid var(--border); border-radius: 8px;">
+        <h3 style="color: var(--primary); margin-bottom: 0.75rem;">💰 Total Cloud Cost</h3>
+        <p style="font-size: 1.2rem; color: white;">
+            <strong>$1000</strong>
+            <span style="color: var(--text-secondary); font-size: 0.95rem;">(across {{ project_count }} projects)</span>
+        </p>
+    </div>
+
+    <!-- Project-Wise Cost Table -->
+    <div style="margin-bottom: 2rem;">
+        <h3 style="color: var(--primary); margin-bottom: 1rem;">📊 Project-Wise Costs</h3>
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #111; color: var(--primary);">
+                    <th style="padding: 0.75rem; text-align:left;">Project Name</th>
+                    <th style="padding: 0.75rem; text-align:left;">Total Cost ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td style="padding: 0.75rem; color: white;">{{ project.name }}</td>
+                    <td style="padding: 0.75rem; color: white;">$500</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Project Selector -->
+    <div style="margin-bottom: 2rem;">
+        <label for="projectSelect" style="color: var(--text-secondary); font-weight: 500;">Select GCP Project:</label>
+        <select id="projectSelect" onchange="loadProjectDetails()" style="padding: 0.6rem; margin-left: 1rem; background: #1a1a1a; color: white; border: 1px solid var(--border); border-radius: 4px;">
+            <option value="">-- Choose Project --</option>
+            {% for project in projects %}
+                <option value="{{ project.id }}">{{ project.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Project Resource & Trend Panel -->
+    <div id="projectDetails" style="display: none;">
+        <h3 style="color: var(--primary); margin-bottom: 1rem;">📦 Resources & Cost Breakdown</h3>
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #111; color: var(--primary);">
+                    <th style="padding: 1rem; border-bottom: 1px solid var(--border);">Resource Type</th>
+                    <th style="padding: 1rem; border-bottom: 1px solid var(--border);">Count</th>
+                    <th style="padding: 1rem; border-bottom: 1px solid var(--border);">Monthly Cost ($)</th>
+                </tr>
+            </thead>
+            <tbody id="resourceRows">
+                <!-- JS will populate this -->
+            </tbody>
+        </table>
+
+        <h4 style="margin-top: 2rem; color: var(--primary);">📈 Cost Trend (Last 7 Days)</h4>
+        <canvas id="costTrendChart" height="120"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js for Trend Graph -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const mockProjects = {{ mock_data|safe }};
+
+    function loadProjectDetails() {
+        const selectedId = document.getElementById("projectSelect").value;
+        const panel = document.getElementById("projectDetails");
+        const table = document.getElementById("resourceRows");
+        const chartEl = document.getElementById("costTrendChart");
+
+        if (!selectedId) {
+            panel.style.display = "none";
+            return;
+        }
+
+        const project = mockProjects.find(p => p.id === selectedId);
+        panel.style.display = "block";
+
+        // Populate resource table
+        table.innerHTML = "";
+        project.resources.forEach(res => {
+            const row = `<tr>
+                <td style="padding: 0.75rem; color: white;">${res.type}</td>
+                <td style="padding: 0.75rem; color: white;">${res.count}</td>
+                <td style="padding: 0.75rem; color: white;">${res.cost.toFixed(2)}</td>
+            </tr>`;
+            table.innerHTML += row;
+        });
+
+        // Build chart
+        const ctx = chartEl.getContext('2d');
+        if (window.costChart) window.costChart.destroy();
+
+        window.costChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: project.trend.days,
+                datasets: [{
+                    label: 'Cost ($)',
+                    data: project.trend.values,
+                    fill: true,
+                    tension: 0.3,
+                    borderColor: '#00ff88',
+                    backgroundColor: 'rgba(0, 255, 136, 0.1)'
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
