@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
     'channels',
+    'core',
 ]
 
 ASGI_APPLICATION = 'modelopsx.asgi.application'

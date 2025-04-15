@@ -1,15 +1,30 @@
 {% extends 'core/base.html' %}
 {% block content %}
 <div style="max-width: 900px; margin: 2rem auto;">
-    <h2 style="color: var(--primary);">🔐 Shell: {{ server.name }}</h2>
+    <h2 style="color: var(--primary); margin-bottom: 1rem;">🔐 Shell: {{ server.name }}</h2>
+
     <form method="post">
         {% csrf_token %}
-        <textarea name="command" rows="4" placeholder="Enter shell command..." style="width:100%; padding:1rem; background:#111; color:white; border:1px solid #333; border-radius:6px;"></textarea>
-        <button type="submit" style="margin-top: 1rem; background: var(--primary); color: black; padding: 0.6rem 1.5rem; border-radius: 6px;">Execute</button>
+        <label for="command" style="color: var(--text-secondary); font-size: 0.9rem;">Command to execute on jumpbox:</label>
+        <textarea 
+            id="command" 
+            name="command" 
+            rows="4" 
+            placeholder="Enter shell command (e.g. uptime, whoami, etc.)" 
+            style="width:100%; padding:1rem; background:#111; color:white; border:1px solid #333; border-radius:6px; margin-top: 0.5rem;"
+        ></textarea>
+
+        <button 
+            type="submit" 
+            style="margin-top: 1rem; background: var(--primary); color: black; padding: 0.6rem 1.5rem; border-radius: 6px; font-weight: bold;"
+        >
+            ▶️ Execute
+        </button>
     </form>
+
     {% if output %}
         <h3 style="margin-top:2rem; color: var(--primary);">💻 Output:</h3>
-        <pre style="background:#1a1a1a; padding:1rem; border-radius:6px; color:white;">{{ output }}</pre>
+        <pre style="background:#1a1a1a; padding:1rem; border-radius:6px; color:white; white-space:pre-wrap;">{{ output }}</pre>
     {% endif %}
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-import paramiko
 import asyncio
+import paramiko
 import io
 
 class InteractiveSSHConsumer(AsyncWebsocketConsumer):
@@ -10,7 +10,7 @@ class InteractiveSSHConsumer(AsyncWebsocketConsumer):
         self.ssh_client = None
         self.chan = None
 
-    async def disconnect(self, close_code):
+    async def disconnect(self, code):
         if self.chan:
             self.chan.close()
         if self.ssh_client:
@@ -29,29 +29,29 @@ class InteractiveSSHConsumer(AsyncWebsocketConsumer):
             ip = data.get("ip")
             username = data.get("username")
             password = data.get("password")
-            pem_content = data.get("pem")
+            pem = data.get("pem")
 
             self.ssh_client = paramiko.SSHClient()
             self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            if pem_content:
-                pkey = paramiko.RSAKey.from_private_key(io.StringIO(pem_content))
-                self.ssh_client.connect(ip, username=username, pkey=pkey)
+            if pem:
+                key = paramiko.RSAKey.from_private_key(io.StringIO(pem))
+                self.ssh_client.connect(ip, username=username, pkey=key)
             else:
                 self.ssh_client.connect(ip, username=username, password=password)
 
             self.chan = self.ssh_client.invoke_shell()
-            asyncio.create_task(self.send_shell_output())
+            asyncio.create_task(self.forward_output())
 
         except Exception as e:
             await self.send(text_data=json.dumps({"error": str(e)}))
 
-    async def send_shell_output(self):
+    async def forward_output(self):
         while True:
             try:
                 if self.chan.recv_ready():
-                    data = self.chan.recv(1024).decode()
-                    await self.send(text_data=json.dumps({"output": data}))
+                    output = self.chan.recv(1024).decode()
+                    await self.send(text_data=json.dumps({"output": output}))
                 await asyncio.sleep(0.1)
             except Exception:
                 break

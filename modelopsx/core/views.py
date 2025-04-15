@@ -112,7 +112,7 @@ def server_list(request):
 
 from django.shortcuts import render, get_object_or_404
 from .models import ServerHost
-from .ssh_service import ssh_to_target
+from .ssh_service import ssh_to_jumpbox  # updated function name to match reality
 
 def shell_terminal(request, pk):
     server = get_object_or_404(ServerHost, pk=pk)
@@ -120,24 +120,19 @@ def shell_terminal(request, pk):
 
     if request.method == "POST":
         cmd = request.POST.get("command")
+
         jumpbox = {
-            'ip': server.jumpbox_ip,
-            'username': server.jumpbox_username,
-            'auth_type': server.jumpbox_auth_type,
-            'pem_file': server.jumpbox_pem_file.file if server.jumpbox_auth_type == 'pem' else None,
-            'password': server.jumpbox_password,
-        }
-        target = {
-            'ip': server.target_ip,
-            'username': server.target_username,
-            'auth_type': server.target_auth_type,
-            'pem_file': server.target_pem_file.file if server.target_auth_type == 'pem' else None,
-            'password': server.target_password,
+            'ip': server.jumpbox_ip_or_hostname,
+            'username': server.username,
+            'auth_type': server.auth_type,
+            'pem_file': server.pem_file.file.read().decode() if server.auth_type == 'pem' else None,
+            'password': server.password,
         }
 
-        output = ssh_to_target(jumpbox, target, cmd)
+        output = ssh_to_jumpbox(jumpbox, cmd)
 
     return render(request, 'core/terminal.html', {'server': server, 'output': output})
+
 
 def interactive_shell(request):
     return render(request, 'core/live_terminal.html')

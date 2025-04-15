@@ -48,21 +48,20 @@ class HubUserActivity(models.Model):
     class Meta:
         unique_together = ('user', 'link')
 
-class ServerHost(models.Model):
-    name = models.CharField(max_length=100)
-    jumpbox_ip = models.GenericIPAddressField()
-    jumpbox_username = models.CharField(max_length=100)
-    jumpbox_auth_type = models.CharField(choices=[('pem', 'PEM File'), ('password', 'Password')], max_length=20)
-    jumpbox_pem_file = models.FileField(upload_to='keys/', blank=True, null=True)
-    jumpbox_password = models.CharField(max_length=255, blank=True, null=True)
 
-    target_ip = models.GenericIPAddressField()
-    target_username = models.CharField(max_length=100)
-    target_password = models.CharField(max_length=255, blank=True, null=True)
-    target_auth_type = models.CharField(choices=[('pem', 'PEM File'), ('password', 'Password')], max_length=20)
-    target_pem_file = models.FileField(upload_to='keys/', blank=True, null=True)
+class ServerHost(models.Model):
+    name = models.CharField(max_length=100, help_text="Label for this server (e.g., Production Jumpbox)")
+    jumpbox_ip_or_hostname = models.CharField(max_length=255, help_text="Can be IP or DNS name")
+    username = models.CharField(max_length=100, help_text="User to connect into jumpbox")
+    
+    auth_type = models.CharField(
+        choices=[('pem', 'PEM File'), ('password', 'Password')],
+        max_length=20
+    )
+    pem_file = models.FileField(upload_to='keys/', blank=True, null=True)
+    password = models.CharField(max_length=255, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} ({self.jumpbox_ip} → {self.target_ip})"
+        return f"{self.name} ({self.jumpbox_ip_or_hostname})"
