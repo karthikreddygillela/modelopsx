@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneFix Principle | Unified Automation Framework</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00ff88;
+      --secondary: #00ccff;
+      --dark: #050505;
+      --darker: #0a0a0a;
+      --light: #ffffff;
+      --gray: #333333;
+      --card-bg: #111111;
+      --header-height: 80px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--dark);
+      color: var(--light);
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--darker);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* Header with animated gradient */
+    header {
+      position: relative;
+      padding: 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--darker), #111122);
+      overflow: hidden;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0,255,136,0.1) 0%, rgba(0,0,0,0) 70%);
+      animation: pulse 15s infinite alternate;
+      z-index: 0;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+      z-index: 1;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      font-size: 4.5rem;
+      margin: 0;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      animation: fadeInDown 1s ease both;
+    }
+
+    header p {
+      font-size: 1.5rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 3rem;
+      animation: fadeInDown 1s ease 0.2s both;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: var(--dark);
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(0,255,136,0.2);
+      animation: fadeInUp 1s ease 0.4s both;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .cta-button:hover::before {
+      opacity: 1;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0,255,136,0.3);
+    }
+
+    .cta-button:active {
+      transform: translateY(1px);
+    }
+
+    .scroll-down {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.6);
+      font-size: 1.5rem;
+      animation: bounce 2s infinite;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    /* Main content sections */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .section-header p {
+      color: rgba(255,255,255,0.7);
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Cards with advanced hover effects */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 2rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,255,136,0.1);
+      border-color: rgba(0,255,136,0.3);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--light);
+    }
+
+    .card p {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1.5rem;
+    }
+
+    .card ul {
+      list-style-type: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .card ul li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .card ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+    }
+
+    /* Feature showcase */
+    .feature-showcase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 4rem;
+      align-items: center;
+    }
+
+    .feature-content {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .feature-image {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+      height: 400px;
+    }
+
+    .feature-image-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--darker), var(--gray));
+      border-radius: 15px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .feature-image-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, 
+        transparent 0%, 
+        rgba(0,255,136,0.05) 30%, 
+        rgba(0,204,255,0.05) 70%, 
+        transparent 100%);
+      animation: shine 5s infinite;
+    }
+
+    .feature-image-inner img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    }
+
+    /* Architecture diagram */
+    .architecture {
+      margin-top: 5rem;
+      position: relative;
+    }
+
+    .architecture-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .architecture-step {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+      border-left: 5px solid var(--primary);
+    }
+
+    .architecture-step:hover {
+      transform: translateX(10px);
+      box-shadow: 0 10px 20px rgba(0,255,136,0.1);
+    }
+
+    .architecture-step-number {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: var(--dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .architecture-step-content h4 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--light);
+    }
+
+    .architecture-step-content p {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .architecture-line {
+      position: absolute;
+      left: 60px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      z-index: 0;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      margin-top: 6rem;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .testimonial-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 2rem;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 1rem;
+      right: 2rem;
+      font-size: 5rem;
+      color: rgba(0,255,136,0.1);
+      font-family: serif;
+      line-height: 1;
+    }
+
+    .testimonial-content {
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+    }
+
+    .testimonial-author img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 1rem;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .author-info h5 {
+      color: var(--light);
+      margin-bottom: 0.2rem;
+    }
+
+    .author-info p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9rem;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 5rem;
+      text-align: center;
+    }
+
+    .stat-item {
+      padding: 2rem;
+      background: rgba(0,255,136,0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(0,255,136,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      background: rgba(0,255,136,0.1);
+      box-shadow: 0 10px 20px rgba(0,255,136,0.1);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+    }
+
+    /* CTA section */
+    .cta-section {
+      text-align: center;
+      padding: 6rem 2rem;
+      background: linear-gradient(135deg, var(--darker), #111122);
+      border-radius: 20px;
+      margin: 6rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 70%);
+      animation: pulse 15s infinite alternate;
+      z-index: 0;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .cta-section p {
+      color: rgba(255,255,255,0.8);
+      font-size: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--darker);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .social-links a {
+      color: rgba(255,255,255,0.7);
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--primary);
+    }
+
+    .copyright {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9rem;
+    }
+    /* Problem Solving Section Styles */
+.problem-solving {
+  padding: 6rem 2rem;
+  background: linear-gradient(to bottom, #050505, #0a0a0a);
+  position: relative;
+  overflow: hidden;
+}
+
+.problem-solving::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 70% 30%, rgba(0,255,136,0.03) 0%, transparent 50%);
+  z-index: 0;
+}
+
+.solution-container {
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.solution-card {
+  display: flex;
+  background: rgba(20, 20, 20, 0.8);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+}
+
+.solution-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,255,136,0.1);
+}
+
+.cd-card {
+  border-left: 5px solid #00ff88;
+}
+
+.incident-card {
+  border-right: 5px solid #00ccff;
+  flex-direction: row-reverse;
+}
+
+.solution-content {
+  flex: 1;
+  padding: 2.5rem;
+}
+
+.solution-visual {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.5);
+}
+
+.solution-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.solution-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.cd-card .solution-icon {
+  background: rgba(0,255,136,0.1);
+  color: #00ff88;
+}
+
+.incident-card .solution-icon {
+  background: rgba(0,204,255,0.1);
+  color: #00ccff;
+}
+
+.solution-header h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  background: linear-gradient(to right, #fff, #eee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: flex-start;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeInRight 0.6s forwards;
+}
+
+.feature-list li:nth-child(1) { animation-delay: 0.2s; }
+.feature-list li:nth-child(2) { animation-delay: 0.4s; }
+.feature-list li:nth-child(3) { animation-delay: 0.6s; }
+.feature-list li:nth-child(4) { animation-delay: 0.8s; }
+
+.feature-list i {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  min-width: 20px;
+}
+
+.cd-card .feature-list i {
+  color: #00ff88;
+}
+
+.incident-card .feature-list i {
+  color: #00ccff;
+}
+
+.pulse-icon {
+  animation: pulse 2s infinite;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.tech-tags span {
+  background: rgba(255,255,255,0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
+}
+
+/* Animation Styles */
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Pipeline Animation */
+.pipeline-animation {
+  position: relative;
+  width: 80%;
+  height: 80%;
+}
+
+.pipeline-line {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: rgba(0,255,136,0.3);
+  overflow: hidden;
+}
+
+.pipeline-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, #00ff88, transparent);
+  animation: flow 3s linear infinite;
+}
+
+.commit-node, .build-node, .test-node, .deploy-node {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #111;
+  border: 2px solid #00ff88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00ff88;
+  font-size: 0.6rem;
+}
+
+.commit-node { top: 45%; left: 10%; animation: float 3s infinite; }
+.build-node { top: 20%; left: 30%; animation: float 3s infinite 0.5s; }
+.test-node { top: 70%; left: 50%; animation: float 3s infinite 1s; }
+.deploy-node { top: 45%; left: 70%; animation: float 3s infinite 1.5s; }
+
+.commit-node::before { content: 'C'; }
+.build-node::before { content: 'B'; }
+.test-node::before { content: 'T'; }
+.deploy-node::before { content: 'D'; }
+
+.success-pulse {
+  position: absolute;
+  top: 45%;
+  left: 90%;
+  width: 15px;
+  height: 15px;
+  background: #00ff88;
+  border-radius: 50%;
+  opacity: 0;
+  animation: successPulse 3s infinite;
+}
+
+/* Incident Animation */
+.incident-animation {
+  position: relative;
+  width: 80%;
+  height: 80%;
+}
+
+.incident-line {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: rgba(0,204,255,0.3);
+  overflow: hidden;
+}
+
+.incident-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, #00ccff, transparent);
+  animation: flowReverse 3s linear infinite;
+}
+
+.alert-node, .correlation-node, .action-node, .resolution-node {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #111;
+  border: 2px solid #00ccff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00ccff;
+  font-size: 0.6rem;
+}
+
+.alert-node { top: 45%; left: 10%; animation: float 3s infinite; }
+.correlation-node { top: 20%; left: 30%; animation: float 3s infinite 0.5s; }
+.action-node { top: 70%; left: 50%; animation: float 3s infinite 1s; }
+.resolution-node { top: 45%; left: 70%; animation: float 3s infinite 1.5s; }
+
+.alert-node::before { content: 'A'; }
+.correlation-node::before { content: 'C'; }
+.action-node::before { content: 'F'; }
+.resolution-node::before { content: 'R'; }
+
+.alert-pulse {
+  position: absolute;
+  top: 45%;
+  left: 90%;
+  width: 15px;
+  height: 15px;
+  background: #00ccff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: alertPulse 3s infinite;
+}
+
+/* Animation Keyframes */
+@keyframes flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes flowReverse {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes successPulse {
+  0%, 40% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+  60%, 100% { opacity: 0; transform: scale(1.5); }
+}
+
+@keyframes alertPulse {
+  0%, 30% { opacity: 0; transform: scale(0); }
+  40% { opacity: 1; transform: scale(1); }
+  50%, 100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .solution-card, .incident-card {
+    flex-direction: column;
+  }
+  
+  .solution-visual {
+    min-height: 200px;
+  }
+  
+  .feature-list li {
+    animation: fadeInUp 0.6s forwards;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { 
+        transform: translateY(-30px); 
+        opacity: 0; 
+      }
+      to { 
+        transform: translateY(0); 
+        opacity: 1; 
+      }
+    }
+
+    @keyframes fadeInUp {
+      from { 
+        transform: translateY(30px); 
+        opacity: 0; 
+      }
+      to { 
+        transform: translateY(0); 
+        opacity: 1; 
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+      40% { transform: translateY(-20px) translateX(-50%); }
+      60% { transform: translateY(-10px) translateX(-50%); }
+    }
+
+    @keyframes shine {
+      0% { background-position: -100% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 3rem;
+      }
+      
+      header p {
+        font-size: 1.2rem;
+      }
+      
+      .section-header h2 {
+        font-size: 2rem;
+      }
+      
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .feature-showcase {
+        flex-direction: column;
+      }
+      
+      .feature-image {
+        height: 300px;
+        margin-top: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .section-header h2 {
+        font-size: 1.8rem;
+      }
+      
+      .stat-number {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Header -->
+  <header>
+    <div class="header-content">
+      <h1>OneFix Principle</h1>
+      <p>
+        A unified, AI-native automation framework that eliminates repeat work across SDLC and IT operations. OneFix learns from failures, applies intelligent remediation, and coordinates actions across development, infrastructure, and business layers—ensuring that the same issue never needs fixing twice.
+      </p>
+      <a href="#contact" class="cta-button">Request Demo</a>
+    </div>
+    <div class="scroll-down" onclick="document.querySelector('section').scrollIntoView({ behavior: 'smooth' })">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </header>
+  
+
+  <!-- Main Content -->
+  <main>
+    <!-- Introduction Section -->
+    <section class="intro-section">
+        <div class="section-header">
+          <h2>What is OneFix Principle?</h2>
+          <p>
+            A self-learning, cross-domain automation system that unifies Development, Operations, and Business layers through context-aware AI agents — reducing human toil and eliminating repeated problem-solving across your stack.
+          </p>
+        </div>
+        
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h3>Self-Learning Agents</h3>
+            <p>
+              Each OneFix agent observes, learns, and applies historical fixes to recurring issues — evolving with feedback and reducing redundant tasks across teams.
+            </p>
+          </div>
+      
+          <div class="card">
+            <div class="card-icon">
+              <i class="fas fa-network-wired"></i>
+            </div>
+            <h3>Layer-Aware Intelligence</h3>
+            <p>
+              Integrates deeply with Dev pipelines, infra tools, and business systems — making context-driven decisions that span the full SDLC and ITIL lifecycle.
+            </p>
+          </div>
+      
+          <div class="card">
+            <div class="card-icon">
+              <i class="fas fa-sync-alt"></i>
+            </div>
+            <h3>Proactive Fix Orchestration</h3>
+            <p>
+              Rather than reacting to failures, OneFix orchestrates intelligent fixes and validations before they escalate — shrinking MTTR and avoiding downstream impacts.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+
+<!-- Problem Solving Section - Redesigned -->
+<section class="problem-solving">
+    <div class="section-header">
+      <h2>Intelligent Automation Engine</h2>
+      <p>OneFix transforms reactive operations into proactive, self-healing systems</p>
+    </div>
+  
+    <div class="solution-container">
+      <!-- CI/CD Solution - Left Side -->
+      <div class="solution-card cd-card">
+        <div class="solution-content">
+          <div class="solution-header">
+            <div class="solution-icon">
+              <i class="fas fa-code-branch"></i>
+            </div>
+            <h3>Autonomous CI/CD Optimization</h3>
+          </div>
+          <div class="solution-body">
+            <ul class="feature-list">
+              <li>
+                <i class="fas fa-brain pulse-icon"></i>
+                <span>Identifies unstable build patterns and flaky tests in real-time</span>
+              </li>
+              <li>
+                <i class="fas fa-magic pulse-icon"></i>
+                <span>Auto-applies fixes or reverts faulty commits using AI memory</span>
+              </li>
+              <li>
+                <i class="fas fa-undo pulse-icon"></i>
+                <span>Triggers safe rollbacks for unhealthy deployments automatically</span>
+              </li>
+              <li>
+                <i class="fas fa-chart-line pulse-icon"></i>
+                <span>Continuously adapts to reduce recurring pipeline issues</span>
+              </li>
+            </ul>
+          </div>
+          <div class="tech-tags">
+            <span>GitHub Actions</span>
+            <span>Jenkins</span>
+            <span>CircleCI</span>
+            <span>ArgoCD</span>
+          </div>
+        </div>
+        <div class="solution-visual">
+          <div class="pipeline-animation">
+            <div class="commit-node"></div>
+            <div class="build-node"></div>
+            <div class="test-node"></div>
+            <div class="deploy-node"></div>
+            <div class="pipeline-line"></div>
+            <div class="success-pulse"></div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Incident Solution - Right Side -->
+      <div class="solution-card incident-card">
+        <div class="solution-visual">
+          <div class="incident-animation">
+            <div class="alert-node"></div>
+            <div class="correlation-node"></div>
+            <div class="action-node"></div>
+            <div class="resolution-node"></div>
+            <div class="incident-line"></div>
+            <div class="alert-pulse"></div>
+          </div>
+        </div>
+        <div class="solution-content">
+          <div class="solution-header">
+            <div class="solution-icon">
+              <i class="fas fa-ambulance"></i>
+            </div>
+            <h3>Autonomic Incident Resolution</h3>
+          </div>
+          <div class="solution-body">
+            <ul class="feature-list">
+              <li>
+                <i class="fas fa-link pulse-icon"></i>
+                <span>Correlates multi-source alerts into unified incident clusters</span>
+              </li>
+              <li>
+                <i class="fas fa-search-plus pulse-icon"></i>
+                <span>Performs real-time root cause analysis using observability data</span>
+              </li>
+              <li>
+                <i class="fas fa-play-circle pulse-icon"></i>
+                <span>Executes auto-approved resolution playbooks with full audit</span>
+              </li>
+              <li>
+                <i class="fas fa-user-shield pulse-icon"></i>
+                <span>Escalates edge-cases with decision-ready context</span>
+              </li>
+            </ul>
+          </div>
+          <div class="tech-tags">
+            <span>ServiceNow</span>
+            <span>PagerDuty</span>
+            <span>Datadog</span>
+            <span>Splunk</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+    <!-- Architecture Section -->
+    <section class="architecture-section">
+      <div class="section-header">
+        <h2>OneFix Architecture</h2>
+        <p>Modular, extensible design that adapts to your ecosystem</p>
+      </div>
+      
+      <div class="architecture">
+        <div class="architecture-line"></div>
+        <div class="architecture-steps">
+          <div class="architecture-step">
+            <div class="architecture-step-number">1</div>
+            <div class="architecture-step-content">
+              <h4>Application Layer</h4>
+              <p>Your applications, services, and infrastructure components that generate operational data and trigger events.</p>
+            </div>
+          </div>
+          
+          <div class="architecture-step">
+            <div class="architecture-step-number">2</div>
+            <div class="architecture-step-content">
+              <h4>Integration Layer</h4>
+              <p>Connectors for popular tools like Splunk, Grafana, Prometheus, Jira, ServiceNow, and custom APIs.</p>
+            </div>
+          </div>
+          
+          <div class="architecture-step">
+            <div class="architecture-step-number">3</div>
+            <div class="architecture-step-content">
+              <h4>AI Engine</h4>
+              <p>Machine learning models that analyze patterns, predict failures, and recommend solutions based on historical data.</p>
+            </div>
+          </div>
+          
+          <div class="architecture-step">
+            <div class="architecture-step-number">4</div>
+            <div class="architecture-step-content">
+              <h4>Rules & Workflows</h4>
+              <p>Customizable automation playbooks that execute predefined or AI-recommended actions based on event triggers.</p>
+            </div>
+          </div>
+          
+          <div class="architecture-step">
+            <div class="architecture-step-number">5</div>
+            <div class="architecture-step-content">
+              <h4>Action Layer</h4>
+              <p>Execution of remediation actions across your infrastructure, applications, and business systems.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="section-header">
+        <h2>Proven Results</h2>
+        <p>Organizations using OneFix see measurable improvements across their IT operations</p>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number">90%</div>
+          <div class="stat-label">Reduction in MTTR</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-number">75%</div>
+          <div class="stat-label">Fewer Critical Incidents</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-number">60%</div>
+          <div class="stat-label">Increase in Deployment Frequency</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-number">40%</div>
+          <div class="stat-label">Reduction in Operational Costs</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+      <div class="section-header">
+        <h2>Trusted by Industry Leaders</h2>
+        <p>What our customers say about OneFix implementation</p>
+      </div>
+      
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            "OneFix transformed our DevOps pipeline from a constant firefight to a smooth, predictable process. We've eliminated 80% of our recurring issues."
+          </div>
+          <div class="testimonial-author">
+            <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sarah Johnson">
+            <div class="author-info">
+              <h5>Sarah Johnson</h5>
+              <p>CTO, TechForward Inc.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            "The AI-driven incident correlation has reduced our alert volume by 90%, allowing our team to focus on strategic work rather than firefighting."
+          </div>
+          <div class="testimonial-author">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen">
+            <div class="author-info">
+              <h5>Michael Chen</h5>
+              <p>Director of CloudOps, GlobalBank</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            "Implementing OneFix was like hiring an entire team of senior SREs. The predictive capabilities have saved us millions in potential downtime."
+          </div>
+          <div class="testimonial-author">
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya Patel">
+            <div class="author-info">
+              <h5>Priya Patel</h5>
+              <p>VP Engineering, ShopMega</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+      <div class="cta-content">
+        <h2>Ready to Transform Your IT Operations?</h2>
+        <p>See how OneFix can automate your workflows, reduce incidents, and improve system reliability. Schedule a demo today.</p>
+        <a href="#" class="cta-button">Get Started Now</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">OneFix</div>
+      
+      <div class="footer-links">
+        <a href="#">Product</a>
+        <a href="#">Solutions</a>
+        <a href="#">Pricing</a>
+        <a href="#">Documentation</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+      </div>
+      
+      <div class="social-links">
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+        <a href="#"><i class="fab fa-github"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div>
+      
+      <div class="copyright">
+        &copy; 2023 OneFix Principle. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple animation triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      const animateOnScroll = function() {
+        const elements = document.querySelectorAll('.card, .architecture-step, .stat-item, .testimonial-card');
+        
+        elements.forEach(element => {
+          const elementPosition = element.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
+          
+          if (elementPosition < windowHeight - 100) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+          }
+        });
+      };
+      
+      // Initialize elements as invisible
+      const animatedElements = document.querySelectorAll('.card, .architecture-step, .stat-item, .testimonial-card');
+      animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      });
+      
+      // Trigger on load and scroll
+      animateOnScroll();
+      window.addEventListener('scroll', animateOnScroll);
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+    // Intersection Observer to trigger animations when scrolled into view
+document.addEventListener('DOMContentLoaded', function() {
+  const solutionCards = document.querySelectorAll('.solution-card');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animated');
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  solutionCards.forEach(card => {
+    observer.observe(card);
+  });
+});
+  </script>
+</body>
+</html>
